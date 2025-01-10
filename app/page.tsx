@@ -57,6 +57,35 @@ const Page = React.forwardRef(({currPage}: { currPage: number }, ref: React.Forw
                 }
             }
 
+            function convertToCanvasCoords([x, y, width, height]:[number, number, number, number]) {
+                const scale = 1.5;
+                return [x * scale, canvas.height - ((y + height) * scale), width * scale, height * scale];
+            }
+
+            if(canvasContext){
+                const structureTree = await page.getTextContent();
+
+                console.log(page.objs);
+
+                structureTree.items.forEach((item: { transform: number[]; width: number; height: number; str:string }) => {
+
+                    if (item.str.toLowerCase().includes(".com")||item.str.toLowerCase().includes(".edu")){
+                        const transform = item.transform;
+                        const x = transform[4];
+                        const y = transform[5];
+                        const width = item.width;
+                        const height = item.height;
+                        canvasContext.fillStyle = "orange";
+                        // @ts-expect-error silly tuple nonsense
+                        canvasContext.fillRect(...convertToCanvasCoords([x, y, width, height]))
+                    }
+                })
+                //canvasContext.fillStyle = "orange";
+                //canvasContext.fillRect(20, 50, canvas.width, canvas.height);
+            }
+
+
+
             if (!isCancelled) {
                 console.log('Rendering completed');
             }
@@ -65,6 +94,7 @@ const Page = React.forwardRef(({currPage}: { currPage: number }, ref: React.Forw
         (async function () {
             if (!canvasRef.current) return;
             await renderPage(canvasRef.current);
+
         })();
 
         // Cleanup function to cancel the render task if the component unmounts.
