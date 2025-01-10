@@ -1,7 +1,7 @@
 "use client"
 import React, {useEffect, useRef, useState} from "react";
 import HTMLFlipBook from "react-pageflip";
-import {RenderTask} from "pdfjs-dist";
+import {OPS, RenderTask} from "pdfjs-dist";
 
 // eslint-disable-next-line react/display-name
 const Page = React.forwardRef(({currPage}: { currPage: number }, ref: React.ForwardedRef<HTMLDivElement>) => {
@@ -65,7 +65,21 @@ const Page = React.forwardRef(({currPage}: { currPage: number }, ref: React.Forw
             if(canvasContext){
                 const structureTree = await page.getTextContent();
 
-                console.log(page.objs);
+                //console.log(page);
+/*                const operatorList = await page.getOperatorList();
+
+                const imgIndex = operatorList.fnArray.indexOf(OPS.paintImageXObject);
+                const imgArgs = operatorList.argsArray[imgIndex];
+                const data = page.objs.get(imgArgs[0]);*/
+
+                canvasContext.fillStyle = "orange";
+                //canvasContext.fillRect(...convertToCanvasCoords([42.76, 45.388, 699, 467]))
+/*                console.log(OPS);
+                console.log(operatorList);
+
+                console.log(page);
+                console.log(data);*/
+
 
                 structureTree.items.forEach((item: { transform: number[]; width: number; height: number; str:string }) => {
 
